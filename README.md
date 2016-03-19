@@ -21,7 +21,7 @@ You can export a CSV of all invoices, all projects and ACTIVE tasks (note: at th
 
     PapierkramExport.exe invoices  -u your@email.com -p secretpassword -d companyname -o projects.csv
     PapierkramExport.exe projects  -u your@email.com -p secretpassword -d companyname -o projects.csv
-    PapierkramExport.exe tasks  -u your@email.com -p secretpassword -d companyname -o tasks.csv
+    PapierkramExport.exe activetasks  -u your@email.com -p secretpassword -d companyname -o tasks.csv
     
 ## Troubleshooting
 
