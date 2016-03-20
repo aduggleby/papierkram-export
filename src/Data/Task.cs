@@ -10,11 +10,12 @@ namespace PapierkramExport.Data
     {
         public int ID { get; set; }
         public string Name { get; set; }
+        public bool Archived { get; set; }
 
         public Project Project { get; set; }
         public Customer Customer { get; set; }
 
-        public DateTime Due { get; set; }
+        public DateTime? Due { get; set; }
 
     }
 }

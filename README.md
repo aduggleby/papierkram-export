@@ -15,14 +15,14 @@ Being by testing login if your credentials are correct.
 Parameter -d is your companies domain (the part in front of .papierkram.de) when you login.
 If login is successfull a message can be seen otherwise an error will be output.
 
-### Invoices, Projects, Tasks
+### Invoices, Projects, Tasks, Active Tasks
 
-You can export a CSV of all invoices, all projects and ACTIVE tasks (note: at the moment the tool only export ACTIVE tasks - a major different to projects and invoices where we export ALL items).
+You can export a CSV of all invoices, all projects and all tasks.
 
     PapierkramExport.exe invoices  -u your@email.com -p secretpassword -d companyname -o invoices.csv
     PapierkramExport.exe projects  -u your@email.com -p secretpassword -d companyname -o projects.csv
-    PapierkramExport.exe activetasks  -u your@email.com -p secretpassword -d companyname -o tasks.csv
-
+    PapierkramExport.exe tasks  -u your@email.com -p secretpassword -d companyname -o tasks.csv
+    
 ### Additional options
 
 There are a couple of extra options:

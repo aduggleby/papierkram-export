@@ -15,19 +15,57 @@ using System.Threading.Tasks;
 
 namespace PapierkramExport.Commands
 {
-    [Verb("activetasks", HelpText = "Get's all ACTIVE tasks")]
-    class ActiveTasks : OutputCommandBase<Data.Task>, IExecutable
+    [Verb("tasks", HelpText = "Get's all tasks")]
+    class Tasks : OutputCommandBase<Data.Task>, IExecutable
     {
+        protected virtual string TaskUrl
+        {
+            get
+            {
+                return "zeiterfassung/aufgaben?f=record_state_all";
+            }
+        }
+
+        protected virtual string ActiveTaskUrl
+        {
+            get
+            {
+                return "zeiterfassung/aufgaben?f=record_state_active";
+            }
+        }
+
         public void Run(ILog log)
         {
             Log = log;
             base.ExecuteLogin();
 
+            var tasks = GetTasks(TaskUrl);
+
+            // there is no archived indicator on the task view so we have to get
+            // the active view and do a delta
+            var activeTasks = GetTasks(ActiveTaskUrl);
+
+            foreach(var task in tasks)
+            {
+                task.Archived = true;
+                if (activeTasks.Any(x => x.ID == task.ID))
+                {
+                    task.Archived = false;
+                }
+            }
+
+            Log.Info("Found " + tasks.Count() + " tasks.");
+
+            base.WriteOutput(tasks);
+        }
+
+        private List<Data.Task> GetTasks(string u)
+        {
             var tasks = new List<Data.Task>();
 
             WithCookieHttpClient(client =>
             {
-                var url = WithTenantUrl("zeiterfassung/aufgaben?f=record_state_active");
+                var url = WithTenantUrl(u);
 
                 while (url != null)
                 {
@@ -55,30 +93,30 @@ namespace PapierkramExport.Commands
                     }
                 }
 
-                Log.Info("Found " + tasks.Count() + " tasks.");
 
-                base.WriteOutput(tasks);
             });
+            return tasks;
         }
 
         protected override void WriteCSVHeader()
         {
-            AppendLineToOutput("Task ID;Task Name;Task Due;Project ID;Project Name;Customer ID;Customer Name".Replace(';', SeperatorChar));
+            AppendLineToOutput("Task ID;Task Name;Task Due;Task Archived;Project ID;Project Name;Customer ID;Customer Name".Replace(';', SeperatorChar));
         }
 
         protected override void WriteCSVLine(Data.Task i)
         {
-            AppendLineToOutput(string.Format("{0};{1};{2};{3};\"{4}\";{5};\"{6}\"".Replace(';', SeperatorChar),
+            AppendLineToOutput(string.Format("{0};{1};{2};{3};{4};\"{5}\";{6};\"{7}\"".Replace(';', SeperatorChar),
                 i.ID,
                 i.Name,
-                i.Due.ToString("yyyy-MM-dd"),
+                i.Due==null?string.Empty :i.Due.Value.ToString("yyyy-MM-dd"),
+                i.Archived.ToString().ToUpper(),
                 i.Project == null ? string.Empty : i.Project.ID.ToString(),
                 i.Project == null ? string.Empty : i.Project.Name,
                 i.Customer == null ? string.Empty : i.Customer.ID.ToString(),
                 i.Customer == null ? string.Empty : i.Customer.Name
                 ));
         }
-        
+
         protected Data.Task TaskParser(IElement row)
         {
             var task = new Data.Task();
