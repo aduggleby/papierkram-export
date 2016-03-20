@@ -63,12 +63,14 @@
     <Compile Include="Commands\CommandBase.cs" />
     <Compile Include="Commands\IExecutable.cs" />
     <Compile Include="Commands\ILog.cs" />
+    <Compile Include="Commands\Payments.cs" />
     <Compile Include="Commands\Tasks.cs" />
     <Compile Include="Commands\Projects.cs" />
     <Compile Include="Commands\Invoices.cs" />
     <Compile Include="Commands\TestLogin.cs" />
     <Compile Include="Data\Customer.cs" />
     <Compile Include="Data\Invoice.cs" />
+    <Compile Include="Data\Payment.cs" />
     <Compile Include="Data\Project.cs" />
     <Compile Include="Data\Task.cs" />
     <Compile Include="IElementExtensions.cs" />

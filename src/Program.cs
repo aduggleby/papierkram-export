@@ -13,7 +13,7 @@ namespace PapierkramExport
     {
         static void Main(string[] args)
         {
-            var r = CommandLine.Parser.Default.ParseArguments<CommandBase, TestLogin, Invoices, Projects, Tasks>(args);
+            var r = CommandLine.Parser.Default.ParseArguments<CommandBase, TestLogin, Invoices, Projects, Tasks, Payments>(args);
             bool wait = false;
             ILog log = null;
             try
@@ -27,6 +27,8 @@ namespace PapierkramExport
                 r.WithParsed<Invoices>(o => o.Run(log));
                 r.WithParsed<Projects>(o => o.Run(log));
                 r.WithParsed<Tasks>(o => o.Run(log));
+                r.WithParsed<Payments>(o => o.Run(log));
+
             }
             catch (Exception ex)
             {
