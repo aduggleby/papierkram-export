@@ -4,6 +4,8 @@ _Note: This projected is not affiliated with or endorsed by odacer finanzsoftwar
 
 A command line tool for exporting projects, tasks and invoices from your papierkram.de account. Written in C# with a Visual Studio 2015 project.
 
+[Download binary for Windows here](https://github.com/aduggleby/papierkram-export/raw/master/dist/PapierkramExport.zip)
+
 ## Usage
 
 ### Login
