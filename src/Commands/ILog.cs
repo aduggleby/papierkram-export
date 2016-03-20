@@ -8,6 +8,8 @@ namespace PapierkramExport.Commands
 {
     interface ILog
     {
+        void Ping();
+
         void Verbose(string txt);
         void Verbose(string txt, params object[] arr);
 

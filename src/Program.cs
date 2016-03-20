@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace PapierkramExport
@@ -54,7 +55,10 @@ namespace PapierkramExport
         }
 
         public Dictionary<Level, ConsoleColor> Colors = new Dictionary<Level, ConsoleColor>();
+        public char[] m_spinner = new char[] { '-', '\\', '|', '/' };
+
         private bool m_verbose = false;
+        private int m_ping = 0;
 
         public Log(bool verbose = false)
         {
@@ -67,18 +71,43 @@ namespace PapierkramExport
 
         private void Output(Level l, string txt, params object[] arr)
         {
+            
             if (l != Level.Verbose || m_verbose)
             {
+                if (m_ping > 0)
+                {
+                    Console.SetCursorPosition(0, Console.CursorTop - 1);
+                    Console.WriteLine();
+                    Console.WriteLine();
+                    Console.SetCursorPosition(0, Console.CursorTop - 1);
+                    m_ping = 0;
+                }
                 Console.ResetColor();
                 Console.ForegroundColor = Colors[l];
                 Console.WriteLine(string.Format("[{0}] {1}: {2}",
                     string.Join("", l.ToString().ToUpper().Take(3)).PadRight(3),
-                    DateTime.Now.ToString("HH:mm:ss"), 
-                    
+                    DateTime.Now.ToString("HH:mm:ss"),
+
                     string.Format(txt, arr)));
 
                 Console.ResetColor();
             }
+        }
+
+        public void Ping()
+        {
+            if (m_ping == 0)
+            {
+                Console.WriteLine("Please wait...");
+            }
+            m_ping++;
+
+            Console.ResetColor();
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.SetCursorPosition(0, Console.CursorTop);
+
+            Console.Write(new string('.', m_ping));
+            Console.Write(m_spinner[m_ping % (m_spinner.Length)]);
         }
 
         public void Error(string txt)

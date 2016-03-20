@@ -16,14 +16,8 @@ using System.Threading.Tasks;
 namespace PapierkramExport.Commands
 {
     [Verb("activetasks", HelpText = "Get's all ACTIVE tasks")]
-    class ActiveTasks : CommandBase, IExecutable
+    class ActiveTasks : OutputCommandBase<Data.Task>, IExecutable
     {
-
-        [Option('o', "output", Required = true,
-          HelpText = "Output file to be written to.")]
-        public string OutputFile { get; set; }
-
-
         public void Run(ILog log)
         {
             Log = log;
@@ -63,22 +57,18 @@ namespace PapierkramExport.Commands
 
                 Log.Info("Found " + tasks.Count() + " tasks.");
 
-                AppendLineToOutput("Task ID;Task Name;Task Due;Project ID;Project Name;Customer ID;Customer Name");
-
-                tasks.ForEach(WriteTaskLine);
+                base.WriteOutput(tasks);
             });
         }
 
-        protected virtual void AppendLineToOutput(string o)
+        protected override void WriteCSVHeader()
         {
-            using (StreamWriter sw = new StreamWriter(OutputFile, true, Encoding.UTF8))
-            {
-                sw.WriteLine(o);
-            }
+            AppendLineToOutput("Task ID;Task Name;Task Due;Project ID;Project Name;Customer ID;Customer Name".Replace(';', SeperatorChar));
         }
-        protected virtual void WriteTaskLine(Data.Task i)
+
+        protected override void WriteCSVLine(Data.Task i)
         {
-            AppendLineToOutput(string.Format("{0};{1};{2};{3};\"{4}\";{5};\"{6}\"",
+            AppendLineToOutput(string.Format("{0};{1};{2};{3};\"{4}\";{5};\"{6}\"".Replace(';', SeperatorChar),
                 i.ID,
                 i.Name,
                 i.Due.ToString("yyyy-MM-dd"),
@@ -88,6 +78,7 @@ namespace PapierkramExport.Commands
                 i.Customer == null ? string.Empty : i.Customer.Name
                 ));
         }
+        
         protected Data.Task TaskParser(IElement row)
         {
             var task = new Data.Task();

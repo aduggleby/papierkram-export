@@ -16,14 +16,8 @@ using System.Threading.Tasks;
 namespace PapierkramExport.Commands
 {
     [Verb("projects", HelpText = "Get's all projects")]
-    class Projects : CommandBase, IExecutable
+    class Projects : OutputCommandBase<Project>, IExecutable
     {
-
-        [Option('o', "output", Required = true,
-          HelpText = "Output file to be written to.")]
-        public string OutputFile { get; set; }
-
-
         public void Run(ILog log)
         {
             Log = log;
@@ -63,28 +57,25 @@ namespace PapierkramExport.Commands
 
                 Log.Info("Found " + projects.Count() + " projects.");
 
-                AppendLineToOutput("Project ID;Project Name;Customer ID;Customer Name");
-
-                projects.ForEach(WriteProjectLine);
+                base.WriteOutput(projects);
             });
         }
 
-        protected virtual void AppendLineToOutput(string o)
+        protected override void WriteCSVHeader()
         {
-            using (StreamWriter sw = new StreamWriter(OutputFile, true, Encoding.UTF8))
-            {
-                sw.WriteLine(o);
-            }
+            AppendLineToOutput("Project ID;Project Name;Customer ID;Customer Name".Replace(';', SeperatorChar));
         }
-        protected virtual void WriteProjectLine(Project p)
+
+        protected override void WriteCSVLine(Project p)
         {
-            AppendLineToOutput(string.Format("{0};\"{1}\";{2};\"{3}\"",
+            AppendLineToOutput(string.Format("{0};\"{1}\";{2};\"{3}\"".Replace(';', SeperatorChar),
                 p.ID,
                 p.Name,
                 p.Customer.ID,
                 p.Customer.Name
                 ));
         }
+
         protected Project ProjectParser(IElement row)
         {
             var project = new Project();

@@ -16,13 +16,8 @@ using System.Threading.Tasks;
 namespace PapierkramExport.Commands
 {
     [Verb("invoices", HelpText = "Get's all invoices")]
-    class Invoices : CommandBase, IExecutable
+    class Invoices : OutputCommandBase<Invoice>, IExecutable
     {
-
-        [Option('o', "output", Required = true,
-          HelpText = "Output file to be written to.")]
-        public string OutputFile { get; set; }
-
 
         public void Run(ILog log)
         {
@@ -63,22 +58,19 @@ namespace PapierkramExport.Commands
 
                 Log.Info("Found " + invoices.Count() + " invoices.");
 
-                AppendLineToOutput("Invoice ID;Invoice Number;Invoice Date;Invoice Due;Invoice Total;Invoice Net;Invoice Subject;Project ID;Project Name;Customer ID;Customer Name");
-
-                invoices.ForEach(WriteInvoiceLine);
+                base.WriteOutput(invoices);
             });
         }
 
-        protected virtual void AppendLineToOutput(string o)
+        protected override void WriteCSVHeader()
         {
-            using (StreamWriter sw = new StreamWriter(OutputFile, true, Encoding.UTF8))
-            {
-                sw.WriteLine(o);
-            }
+            AppendLineToOutput("Invoice ID;Invoice Number;Invoice Date;Invoice Due;Invoice Total;Invoice Net;Invoice Subject;Project ID;Project Name;Customer ID;Customer Name".Replace(';', SeperatorChar));
+
         }
-        protected virtual void WriteInvoiceLine(Invoice i)
+
+        protected override void WriteCSVLine(Invoice i)
         {
-            AppendLineToOutput(string.Format("{0};{1};{2};{3};{4};{5};\"{6}\";{7};\"{8}\";{9};\"{10}\"",
+            AppendLineToOutput(string.Format("{0};{1};{2};{3};{4};{5};\"{6}\";{7};\"{8}\";{9};\"{10}\"".Replace(';', SeperatorChar),
                 i.ID,
                 i.Number,
                 i.Date.ToString("yyyy-MM-dd"),
@@ -92,6 +84,7 @@ namespace PapierkramExport.Commands
                 i.Customer == null ? string.Empty : i.Customer.Name
                 ));
         }
+
         protected Invoice InvoiceParser(IElement row)
         {
             var invoice = new Invoice();

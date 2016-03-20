@@ -22,6 +22,51 @@ You can export a CSV of all invoices, all projects and ACTIVE tasks (note: at th
     PapierkramExport.exe invoices  -u your@email.com -p secretpassword -d companyname -o invoices.csv
     PapierkramExport.exe projects  -u your@email.com -p secretpassword -d companyname -o projects.csv
     PapierkramExport.exe activetasks  -u your@email.com -p secretpassword -d companyname -o tasks.csv
+
+### Additional options
+
+There are a couple of extra options:
+
+**Overwrite the output file if it exists**
+
+    -x 
+    
+**Wait for <enter> after finishing processing**
+
+    -w
+    
+    
+
+#### Format 
+
+**Format CSV (default)**
+
+	-f csv
+
+**Format JSON**
+
+	-f json
+
+
+#### CSV Options
+
+**CSV Separator character: comma**
+
+    -c c
+    
+**CSV Separator character: semicolon**
+
+    -c s
+    
+**CSV Separator character: tab**
+
+    -c t
+    
+**Write seperator line to file**
+
+Tells Excels which is the seperator char if it does not match your regional settings. WARNING: Excel does not read UTF8 characters correctly when the seperator line is defined (see [here](http://stackoverflow.com/questions/20395699/sep-statement-breaks-utf8-bom-in-csv-file-which-is-generated-by-xsl)).
+
+    -w 
     
 ## Troubleshooting
 
