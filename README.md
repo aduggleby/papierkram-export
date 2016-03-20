@@ -19,7 +19,7 @@ If login is successfull a message can be seen otherwise an error will be output.
 
 ### Invoices, Projects, Tasks, Payments
 
-You can export a CSV of all invoices, all projects and all tasks.
+You can export a CSV of all invoices, all projects, all tasks and all payments.
 
     PapierkramExport.exe invoices  -u your@email.com -p secretpassword -d companyname -o invoices.csv
     PapierkramExport.exe projects  -u your@email.com -p secretpassword -d companyname -o projects.csv
