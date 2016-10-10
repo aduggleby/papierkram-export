@@ -123,38 +123,34 @@ namespace PapierkramExport.Commands
 
             task.ID = Int32.Parse(row.GetAttribute("data-record-id"));
 
+            var debug = row.InnerHtml;
+
             var cells = row.QuerySelectorAll("td");
 
             var nameAndCustomer = cells[3];
             task.Name = nameAndCustomer.QuerySelectorAll("a").First().InnerHtmlDecoded();
 
             var projectAndCustomer = cells[4];
-            var projectNode = projectAndCustomer.QuerySelectorAll("a").First();
+            var customerNode = projectAndCustomer.QuerySelectorAll("a").First();
+            
+            task.Customer = new Customer();
+            task.Customer.ID = Int32.Parse(customerNode.GetAttribute("href").Split('/').Last());
+            task.Customer.Name = customerNode.InnerHtmlDecoded();
 
-            task.Project = new Project();
-            task.Project.ID = Int32.Parse(projectNode.GetAttribute("href").Split('/').Last());
-            task.Project.Name = projectNode.InnerHtmlDecoded();
-
-
-            var customerNode = projectAndCustomer.QuerySelectorAll("div>a").FirstOrDefault();
-            if (customerNode != null)
+            var projectNode = projectAndCustomer.QuerySelectorAll("div>a").FirstOrDefault();
+            if (projectNode != null)
             {
-                task.Project.Customer = new Customer();
-                task.Project.Customer.ID = Int32.Parse(customerNode.GetAttribute("href").Split('/').Last());
-                task.Project.Customer.Name = customerNode.InnerHtmlDecoded();
-                task.Customer = task.Project.Customer;
+                task.Project = new Project();
+                task.Project.ID = Int32.Parse(projectNode.GetAttribute("href").Split('/').Last());
+                task.Project.Name = projectNode.InnerHtmlDecoded();
+
+                task.Project.Customer = task.Customer;
 
                 Log.Info("Found task {0}: {3}({2}) {5}({4}) - {1}", task.ID, task.Name, task.Project.ID, task.Project.Name, task.Project.Customer.ID, task.Project.Customer.Name);
-
             }
             else
             {
-                task.Customer = new Customer();
-                task.Customer.ID = task.Project.ID;
-                task.Customer.Name = task.Project.Name;
-
                 task.Project = null;
-
                 Log.Info("Found task {0}: {3}({2}) - {1}", task.ID, task.Name, task.Customer.ID, task.Customer.Name);
 
             }

@@ -98,12 +98,12 @@ namespace PapierkramExport.Commands
             invoice.Name = numberAndSubject.QuerySelectorAll("div>em").First().InnerHtmlDecoded();
 
             var projectAndCustomer = cells[4];
-            var projectNode = projectAndCustomer.QuerySelectorAll("a").First();
-            var projectName = projectNode.InnerHtmlDecoded();
-            var projectID = Int32.Parse(projectNode.GetAttribute("href").Split('/').Last());
+            var customerNode = projectAndCustomer.QuerySelectorAll("a").First();
+            var customerName = customerNode.InnerHtmlDecoded();
+            var customerID = Int32.Parse(customerNode.GetAttribute("href").Split('/').Last());
 
-            string customerName;
-            int customerID;
+            string projectName;
+            int projectID;
 
             Log.Info("Found Invoice {0}: [{1}] {2}", invoice.ID, invoice.Number.PadRight(15), invoice.Name);
 
@@ -112,9 +112,9 @@ namespace PapierkramExport.Commands
             {
 
                 // invoice has a project assigned.
-                var customerNode = secondNode.First();
-                customerName = customerNode.InnerHtmlDecoded();
-                customerID = Int32.Parse(customerNode.GetAttribute("href").Split('/').Last());
+                var projectNode = secondNode.First();
+                projectName = projectNode.InnerHtmlDecoded();
+                projectID = Int32.Parse(projectNode.GetAttribute("href").Split('/').Last());
 
                 Log.Verbose("for customer {0} ({1}) and project {2} ({3})", customerName, customerID, projectName, projectID);
 
@@ -135,11 +135,11 @@ namespace PapierkramExport.Commands
             }
             else
             {
-                // the first node was the customer not the project, so correct it.
-                customerName = projectName;
-                projectName = null;
-                customerID = projectID;
-                projectID = 0;
+                //// the first node was the customer not the project, so correct it.
+                //customerName = projectName;
+                //projectName = null;
+                //customerID = projectID;
+                //projectID = 0;
 
                 Log.Verbose("for customer {0} ({1}) (no project assigned)", customerName, customerID);
 
