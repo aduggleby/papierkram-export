@@ -137,7 +137,7 @@ namespace PapierkramExport
                 {
                     Log.Info("Login successful as " + User + " for " + TenantUrl);
                 }
-            });
+            }); // Encounter a "'iso-2022-cn' is not a supported encoding name" exception here? Continue, it is handled by trying again.
         }
 
         protected Dictionary<string, string> GetCSRFParams(AngleSharp.Dom.Html.IHtmlDocument doc)
